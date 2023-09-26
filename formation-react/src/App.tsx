@@ -1,7 +1,6 @@
 import styles from "./App.module.css";
 import { pokemons } from "./mocks/pokemons";
 import PokemonCard from "./components/PokemonCard";
-import React from "react";
 import PokemonForm from "./components/PokemonForm";
 
 function App() {
