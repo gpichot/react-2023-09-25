@@ -15,6 +15,7 @@ import {
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { apiUrl } from "./config";
 import { PokemonDetail } from "./types";
+import PokemonDetailPage from "./pages/PokemonDetailPage";
 
 const sleep = () =>
   new Promise((resolve) => {
@@ -23,14 +24,18 @@ const sleep = () =>
 
 function PokemonListPage() {
   const pokemonListQuery = useQuery({
-    queryKey: ["pokemons"],
+    queryKey: ["pokemons", { page }],
     queryFn: async () => {
       await sleep();
       const response = await fetch(`${apiUrl}/pokemons/`);
-      return response.json() as Promise<{
+      const result = await response.json();
+      return result as {
+        count: number;
+        nextLimit: number | null;
         results: PokemonDetail[];
-      }>;
+      };
     },
+    staleTime: 10 * 1000,
   });
 
   if (pokemonListQuery.isLoading) {
@@ -82,10 +87,10 @@ const router = createBrowserRouter([
         path: "/pokemons/create",
         element: <PokemonForm />,
       },
-      //{
-      //  path: "/pokemons/:pokemonId",
-      //  element: <PokemonDetailPage />
-      //}
+      {
+        path: "/pokemons/:pokemonId",
+        element: <PokemonDetailPage />,
+      },
     ],
   },
 ]);
