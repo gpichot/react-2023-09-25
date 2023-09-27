@@ -12,3 +12,18 @@ export function usePokemonDetailQuery(pokemonId: string | undefined) {
     },
   });
 }
+export function usePokemonListQuery({ offset }: { offset: number }) {
+  return useQuery({
+    queryKey: ["pokemons", { offset }],
+    queryFn: async () => {
+      const response = await fetch(`${apiUrl}/pokemons/?offset=${offset}`);
+      const result = await response.json();
+      return result as {
+        count: number;
+        nextLimit: number | null;
+        results: PokemonDetail[];
+      };
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+}
