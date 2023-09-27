@@ -1,19 +1,10 @@
 import { useParams } from "react-router-dom";
-import { apiUrl } from "../config";
-import { useQuery } from "@tanstack/react-query";
-import { PokemonDetail } from "../types";
+import { usePokemonDetailQuery } from "../api-hooks/queries";
 
 export default function PokemonDetailPage() {
   const { pokemonId } = useParams<{ pokemonId: string }>();
 
-  const pokemonDetailQuery = useQuery({
-    queryKey: ["pokemon-detail", pokemonId],
-    queryFn: async () => {
-      const response = await fetch(`${apiUrl}/pokemons/${pokemonId}`);
-      const result = await response.json();
-      return result as PokemonDetail;
-    },
-  });
+  const pokemonDetailQuery = usePokemonDetailQuery(pokemonId);
 
   if (pokemonDetailQuery.isLoading) {
     return <p>Is loading...</p>;

@@ -1,5 +1,4 @@
 import styles from "./App.module.css";
-import PokemonCard from "./components/PokemonCard";
 import PokemonForm from "./components/PokemonForm";
 import {
   Link,
@@ -7,60 +6,10 @@ import {
   RouterProvider,
   createBrowserRouter,
 } from "react-router-dom";
-import {
-  QueryClient,
-  QueryClientProvider,
-  useQuery,
-} from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { apiUrl } from "./config";
-import { PokemonDetail } from "./types";
 import PokemonDetailPage from "./pages/PokemonDetailPage";
-
-const sleep = () =>
-  new Promise((resolve) => {
-    setTimeout(resolve, 2000);
-  });
-
-function PokemonListPage() {
-  const pokemonListQuery = useQuery({
-    queryKey: ["pokemons", { page }],
-    queryFn: async () => {
-      await sleep();
-      const response = await fetch(`${apiUrl}/pokemons/`);
-      const result = await response.json();
-      return result as {
-        count: number;
-        nextLimit: number | null;
-        results: PokemonDetail[];
-      };
-    },
-    staleTime: 10 * 1000,
-  });
-
-  if (pokemonListQuery.isLoading) {
-    return <p>Chargement en cours</p>;
-  }
-
-  if (pokemonListQuery.isError) {
-    return (
-      <p>
-        Erreur de chargement{" "}
-        <button onClick={() => pokemonListQuery.refetch()}>Retenter</button>
-      </p>
-    );
-  }
-
-  const pokemons = pokemonListQuery.data.results;
-
-  return (
-    <div className={styles.list}>
-      {pokemons.map((pokemon) => (
-        <PokemonCard key={pokemon.id} pokemon={pokemon} />
-      ))}
-    </div>
-  );
-}
+import PokemonListPage from "./pages/PokemonListPage";
 
 function Root() {
   return (
